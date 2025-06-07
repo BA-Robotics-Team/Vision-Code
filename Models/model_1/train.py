@@ -1,5 +1,5 @@
+import torch 
 from ultralytics import YOLO 
-import torch
 
 # Check for GPU availability
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -17,7 +17,7 @@ model.train(
     epochs=1,           # More epochs for better convergence
     imgsz=640,            # Standard YOLO image size
     batch=16,             # Balanced batch size for 3,300 images
-    device=device, # Use GPU if available
+    device=1,        # Use GPU if available
     workers=2,            # Optimize for Kaggle's CPU cores
     save=True,            # Save model checkpoints
     project="results",  # Save results in Kaggle workspace
