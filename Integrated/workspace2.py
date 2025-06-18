@@ -71,11 +71,24 @@ def overlay_border(img, pts,Ocoords):
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 1)    
     return img,coord
 
+def ack():
+    global prev
+    ack_sock = socket.socket()
+    ack.connect(('192.168.31.99', 1234))
+    ack = ack_sock.recv(1024).decode()
+    if ack:
+        prev = True
+
+def start_ack_thread():
+    t=Thread(target=ack,daemon=True)
+
 def run():
     s=socket.socket()
+    s.connect(('192.168.31.99', 12345))
     prev=True #variable for tcp control
     cap = cv2.VideoCapture(0)
     model=YOLO("best.pt")
+    start_ack_thread()
     
     for x in range(5):
         ret, frame = cap.read()
@@ -97,14 +110,7 @@ def run():
            actuations=Ikinematics(robjCoords[0],robjCoords[1],0)
            if prev:
                TCP_Comm(s,actuations)
-               prev = False
-
-               ack_sock = socket.socke
-               ack_sock.connect(('192.168.31.99', 12345))
-               ack = ack_sock.recv(1024).decode()
-               if ack:
-                   prev = True
-               ack_sock.close()
+               prev=False
           except: 
              pass
         
@@ -114,3 +120,6 @@ def run():
     cv2.destroyAllWindows()
 
 run()
+
+
+
