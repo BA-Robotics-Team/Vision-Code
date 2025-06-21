@@ -1,0 +1,9 @@
+
+train: ../Dataset/Train/images
+val: ../Dataset/Valid/images
+test: ../Dataset/Test/images
+
+nc: 1
+names: ['BEX']
+
+obb: True

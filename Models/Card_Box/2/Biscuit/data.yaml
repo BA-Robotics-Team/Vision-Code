@@ -1,0 +1,9 @@
+
+train: ../Biscuit/Train/images
+val: ../Biscuit/Valid/images
+test: ../Biscuit/Test/images
+
+nc: 1
+names: ['BEX']
+
+obb: True
