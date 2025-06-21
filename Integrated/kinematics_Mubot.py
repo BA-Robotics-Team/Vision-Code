@@ -28,7 +28,8 @@ def TCP_Comm(s,parameters):
 
 if __name__ =="__main__":
   s=socket.socket()
-  s.connect(('192.168.31.99', 12345))  # Replace with your Pi's IP
+  s.connect(('192.168.31.100', 12345)) 
+ # Replace with your Pi's IP
   while True:
    x=float(input("Enter x coordinate:"))
    y=float(input("Enter y coordinate:"))
