@@ -4,9 +4,9 @@ import cv2
 import time
 
 # Load the model
-model = YOLO("runs\\train\\yolov8_obb_biscuit\\weights\\best.pt")
+model = YOLO(r"E:\BA_DOBOT\Vision-Code\Models\Card_Box\1\runs\BEx\weights\best.pt")
 
-# Initialize webcam
+# Initialize webcam z
 cap = cv2.VideoCapture(1)
 
 if not cap.isOpened():
@@ -35,6 +35,7 @@ while True:
 
     # Save roll angle if detected
     if roll_deg is not None:
+        print(roll_deg)
         with open("file.txt", 'a') as f:
             f.write(f"{roll_deg:.2f}\n")
 
