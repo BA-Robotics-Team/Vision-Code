@@ -7,7 +7,6 @@ import socket
 from threading import Thread, Lock
 
 ack_received = False
-ack_lock = Lock()
 
 # Constants
 WORKSPACE_WIDTH = 17.1 # cm
@@ -74,24 +73,19 @@ def overlay_border(img, pts,Ocoords):
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 1)    
     return img,coord
 
-def ack(s):
-    global ack_received
-    while True:
-        try:
-            reply = s.recv(1024).decode()
-            if reply:
-                with ack_lock:
-                    ack_received = True
-        except Exception:
-            continue  #Ignore connection hiccups or empty reads
+def A(s):
+    global prev
+    reply = s.recv(1024).decode().strip()
+    if reply: return True
+    else: False
 
 def run():
     s=socket.socket()
     s.connect(('192.168.31.99', 12345))
-    Thread(target=ack, args=(s,), daemon=True).start()
+    s.setblocking(False)
     prev=True #variable for tcp control
     cap = cv2.VideoCapture(0)
-    model=YOLO("best.pt")
+    model=YOLO("Workspace\\Weights\\best_gear.pt")
     
     for x in range(5):
         ret, frame = cap.read()
@@ -115,10 +109,7 @@ def run():
                 TCP_Comm(s, actuations)
                 prev = False
            else:
-                with ack_lock:
-                    if ack_received:
-                        ack_received = False
-                        prev = True
+                prev=A(s)
           except: 
              pass
         

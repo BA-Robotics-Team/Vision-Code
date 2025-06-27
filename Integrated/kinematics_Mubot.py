@@ -4,7 +4,7 @@ import socket
 def Ikinematics(x,y,z):
 
   link1=12
-  link2=12
+  link2=13.5
   
   #Motor 0
   theta0=(m.atan2(y,x))*180/(m.pi) #Motor 0 Angle
@@ -28,7 +28,7 @@ def TCP_Comm(s,parameters):
 
 if __name__ =="__main__": 
   s=socket.socket()
-  s.connect(('192.168.31.100', 12345)) 
+  s.connect(('192.168.31.99', 12345)) 
  # Replace with your Pi's IP
   while True:
    x=float(input("Enter x coordinate:"))
