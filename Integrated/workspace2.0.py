@@ -4,7 +4,10 @@ from ultralytics import YOLO
 from kinematics_Mubot import Ikinematics,TCP_Comm
 import math as m
 import socket
-from threading import Thread
+from threading import Thread, Lock
+
+ack_received = False
+ack_lock = Lock()
 
 # Constants
 WORKSPACE_WIDTH = 17.1 # cm
@@ -71,24 +74,24 @@ def overlay_border(img, pts,Ocoords):
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 1)    
     return img,coord
 
-def ack():
-    global prev
-    ack_sock = socket.socket()
-    ack.connect(('192.168.31.99', 1234))
-    ack = ack_sock.recv(1024).decode()
-    if ack:
-        prev = True
-
-def start_ack_thread():
-    t=Thread(target=ack,daemon=True)
+def ack(s):
+    global ack_received
+    while True:
+        try:
+            reply = s.recv(1024).decode()
+            if reply:
+                with ack_lock:
+                    ack_received = True
+        except Exception:
+            continue  #Ignore connection hiccups or empty reads
 
 def run():
     s=socket.socket()
     s.connect(('192.168.31.99', 12345))
+    Thread(target=ack, args=(s,), daemon=True).start()
     prev=True #variable for tcp control
     cap = cv2.VideoCapture(0)
     model=YOLO("best.pt")
-    start_ack_thread()
     
     for x in range(5):
         ret, frame = cap.read()
@@ -109,8 +112,13 @@ def run():
           try:
            actuations=Ikinematics(robjCoords[0],robjCoords[1],0)
            if prev:
-               TCP_Comm(s,actuations)
-               prev=False
+                TCP_Comm(s, actuations)
+                prev = False
+           else:
+                with ack_lock:
+                    if ack_received:
+                        ack_received = False
+                        prev = True
           except: 
              pass
         

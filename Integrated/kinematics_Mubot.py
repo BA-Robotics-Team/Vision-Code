@@ -26,7 +26,7 @@ def Ikinematics(x,y,z):
 def TCP_Comm(s,parameters):
   s.send(f"{parameters[0]:.2f},{parameters[1]:.2f},{parameters[2]:.2f}".encode())
 
-if __name__ =="__main__":
+if __name__ =="__main__": 
   s=socket.socket()
   s.connect(('192.168.31.100', 12345)) 
  # Replace with your Pi's IP
@@ -35,7 +35,7 @@ if __name__ =="__main__":
    y=float(input("Enter y coordinate:"))
    z=float(input("Enter z coordinate:"))
   
-   if x == 100 :break
+   if x == 100:break
    if y == 100:break
    if z == 100:break
   
